@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Task Manager with Validation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Python Task Manager</h1>
+        <p class="subtitle">Learning Flask, HTML, CSS, & JavaScript Validation</p>
+
+        <!-- Add Task Form -->
+        <div class="card">
+            <h2>Add New Task</h2>
+            <form action="/add" method="POST" id="task-form" novalidate>
+                
+                <!-- User Account Details -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Your Name *</label>
+                        <input type="text" name="user_name" placeholder="e.g., Harsh" required>
+                    </div>
+                    <div class="form-group">
+                        <label>User ID *</label>
+                        <input type="text" name="user_id" placeholder="e.g., u_101" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-email">Email (for notifications) *</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="user-email" name="email" placeholder="e.g., harsh@gmail.com" required>
+                        <div id="email-error" class="floating-tooltip hidden">⚠️ Invalid email. Please enter a valid format.</div>
+                    </div>
+                </div>
+
+                <hr style="margin: 1rem 0; border: 0; border-top: 1px solid #e2e8f0;">
+
+                <!-- Task Details -->
+                <div class="form-group">
+                    <label>Task Name *</label>
+                    <input type="text" name="title" placeholder="e.g., Study Python loops" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category">
+                            <option value="Academics">Academics</option>
+                            <option value="Personal Outings">Personal Outings</option>
+                            <option value="Home Chores">Home Chores</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Due Date (Blank = Today)</label>
+                        <input type="date" name="due_date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Timeline / Time Slot</label>
+                    <input type="text" name="timeline" placeholder="e.g., 2:00 PM - 4:00 PM">
+                </div>
+
+                <button type="submit" class="btn-primary">Add Task</button>
+            </form>
+        </div>
+
+        <!-- Task List Display -->
+        <div class="card">
+            <h2>Your Tasks</h2>
+            {% if tasks %}
+                <ul>
+                    {% for task in tasks %}
+                    <li class="task-item {% if task.completed %}completed{% endif %}">
+                        <div>
+                            <strong>{{ task.title }}</strong>
+                            <div class="task-meta">
+                                <span>👤 {{ task.user_name }} (ID: {{ task.user_id }})</span> | 
+                                <span>📧 {{ task.email }}</span><br>
+                                <span>📁 {{ task.category }}</span> | 
+                                <span>📅 {{ task.due_date }}</span> | 
+                                <span>🕒 {{ task.timeline }}</span>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <a href="/toggle/{{ task.id }}">
+                                {% if task.completed %}↩ Undo{% else %}✓ Done{% endif %}
+                            </a>
+                            <a href="/delete/{{ task.id }}" class="delete">✕ Delete</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p style="color: #64748b; text-align: center; padding: 1rem;">No tasks found. Add one above!</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
